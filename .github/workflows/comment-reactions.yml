@@ -1,0 +1,43 @@
+name: Comment reactions
+
+on:
+  # 支持手动运行
+  workflow_dispatch:
+
+  # 每天运行一次，UTC 00:00，即北京时间 08:00
+  schedule:
+    - cron: "0 0 * * *"
+
+  # 修改工作流后自动运行
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/comment-reactions.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  generate-reactions:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate comment reaction card
+        uses: lowlighter/metrics@latest
+        with:
+          filename: comment_reaction.svg
+          token: ${{ secrets.METRICS_TOKEN }}
+
+          user: ZHlo-404
+          template: classic
+          base: ""
+          config_timezone: Asia/Shanghai
+
+          plugin_reactions: yes
+          plugin_reactions_display: absolute
+
+          plugin_reactions_limit: 200
+          plugin_reactions_limit_issues: 100
+          plugin_reactions_limit_discussions: 100
+          plugin_reactions_limit_discussions_comments: 100
